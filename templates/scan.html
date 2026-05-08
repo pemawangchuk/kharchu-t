@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>Ticket Check-In</title>
+
+<style>
+body {
+    margin: 0;
+    font-family: Arial, sans-serif;
+    background: linear-gradient(135deg, #1a237e, #283593);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 100vh;
+}
+
+/* Card */
+.form-container {
+    background: #fff;
+    padding: 30px;
+    border-radius: 12px;
+    width: 100%;
+    max-width: 420px;
+    box-shadow: 0 8px 20px rgba(0,0,0,0.2);
+}
+
+/* Title */
+h2 {
+    text-align: center;
+    margin-bottom: 20px;
+    color: #333;
+}
+
+/* Inputs */
+input {
+    width: 100%;
+    padding: 12px;
+    margin-bottom: 15px;
+    border: 1px solid #ddd;
+    border-radius: 6px;
+    font-size: 16px;
+    box-sizing: border-box;
+}
+
+/* Button */
+button {
+    width: 100%;
+    padding: 12px;
+    background: #ff6f00;
+    color: white;
+    border: none;
+    border-radius: 6px;
+    font-size: 16px;
+    cursor: pointer;
+}
+
+button:hover {
+    background: #e65100;
+}
+
+/* Success box */
+.success {
+    margin-top: 15px;
+    padding: 12px;
+    background: #e8f5e9;
+    border: 1px solid #66bb6a;
+    color: #2e7d32;
+    border-radius: 6px;
+    text-align: center;
+    font-weight: bold;
+}
+
+/* Mobile */
+@media (max-width: 480px) {
+    .form-container {
+        margin: 20px;
+        padding: 20px;
+    }
+}
+</style>
+
+</head>
+
+<body>
+
+<div class="form-container">
+
+    <h2>Ticket Check-In</h2>
+
+    <!-- FORM -->
+    <form method="POST">
+        {% csrf_token %}
+        <input type="text" name="name" placeholder="Name" required>
+        <input type="text" name="phone" placeholder="Phone" required>
+        <button type="submit">Submit</button>
+    </form>
+
+    <!-- SUCCESS MESSAGE -->
+    {% if ticket %}
+        <div class="success">
+            🎟 Ticket number <strong>{{ ticket.ticket_number }}</strong> belongs to you
+        </div>
+    {% endif %}
+
+</div>
+
+</body>
+</html>

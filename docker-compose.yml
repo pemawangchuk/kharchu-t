@@ -1,0 +1,28 @@
+services:
+  db:
+    image: postgres:15
+    environment:
+      POSTGRES_DB: eticket
+      POSTGRES_USER: eticket_user
+      POSTGRES_PASSWORD: eticket_pass
+    ports:
+      - "5432:5432"
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+
+  web:
+    build: .
+    command: gunicorn eticket_project.wsgi:application --bind 0.0.0.0:8000
+    volumes:
+      - .:/eticket_project
+    ports:
+      - "8000:8000"
+    depends_on:
+      - db
+      - redis
+
+  redis:
+    image: redis:7
+
+volumes:
+  pgdata:

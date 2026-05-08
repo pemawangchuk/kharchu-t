@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>Ticket Lookup</title>
+
+<style>
+body {
+    font-family: Arial;
+    background: #f4f6f8;
+    margin: 0;
+    padding: 0;
+}
+
+.container {
+    max-width: 600px;
+    margin: 50px auto;
+    background: white;
+    padding: 25px;
+    border-radius: 10px;
+    text-align: center;
+    box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+}
+
+input {
+    width: 80%;
+    padding: 10px;
+    margin-bottom: 10px;
+}
+
+button {
+    padding: 10px 20px;
+    background: #1a237e;
+    color: white;
+    border: none;
+    cursor: pointer;
+}
+
+.status {
+    font-weight: bold;
+    margin-top: 10px;
+}
+
+.available { color: green; }
+.assigned { color: red; }
+
+.error {
+    color: red;
+    margin-top: 10px;
+}
+</style>
+
+</head>
+
+<body>
+
+<div class="container">
+
+    <h2>🔍 Ticket Lookup</h2>
+
+    <form method="GET">
+        <input type="text" name="q" placeholder="Enter ticket number or phone">
+        <br>
+        <button type="submit">Search</button>
+    </form>
+
+    <hr>
+
+    {% if error %}
+        <div class="error">{{ error }}</div>
+    {% endif %}
+
+    {% if ticket %}
+
+        <h3>🎟 {{ ticket.ticket_number }}</h3>
+
+        {% if status == "ASSIGNED" %}
+            <div class="status assigned"> ASSIGNED</div>
+            <p>Name: {{ attendee.name }}</p>
+            <p>Phone: {{ attendee.phone }}</p>
+        {% else %}
+            <div class="status available">✅ AVAILABLE</div>
+        {% endif %}
+
+    {% endif %}
+
+</div>
+
+</body>
+</html>

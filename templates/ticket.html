@@ -1,0 +1,329 @@
+{% load static %}
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>Lottery Ticket</title>
+
+<style>
+
+/* =========================
+   STANDARD TICKET SIZE
+========================= */
+@page{
+    size:180mm 80mm;
+    margin:0;
+}
+
+*{
+    margin:0;
+    padding:0;
+    box-sizing:border-box;
+    -webkit-print-color-adjust:exact;
+    print-color-adjust:exact;
+}
+
+html,
+body{
+    width:180mm;
+    height:80mm;
+    overflow:hidden;
+    font-family:Arial,sans-serif;
+    background:#dbe6ef;
+}
+
+/* =========================
+   MAIN TICKET
+========================= */
+.ticket{
+    width:180mm;
+    height:80mm;
+    position:relative;
+    overflow:hidden;
+    background:linear-gradient(to bottom,#d9e7f2,#edf3f8);
+    border-radius:4mm;
+}
+
+/* =========================
+   BACKGROUND IMAGE
+========================= */
+.bg-temple{
+    position:absolute;
+    width:100%;
+    height:100%;
+    object-fit:cover;
+    top:0;
+    left:0;
+    z-index:1;
+    opacity:0.95;
+}
+
+/* =========================
+   LOGO
+========================= */
+.logo{
+    position:absolute;
+    top:4mm;
+    left:4mm;
+    width:18mm;
+    z-index:20;
+}
+
+/* =========================
+   HEADER
+========================= */
+.header{
+    position:absolute;
+    top:4mm;
+    width:100%;
+    text-align:center;
+    z-index:20;
+}
+
+.header h1{
+    font-size:12pt;
+    font-weight:900;
+    line-height:1.2;
+    color:#000;
+    text-shadow:1px 1px 2px rgba(255,255,255,0.7);
+}
+
+/* =========================
+   QR SECTION
+========================= */
+.qr-section{
+    position:absolute;
+    top:4mm;
+    right:4mm;
+    text-align:center;
+    z-index:20;
+}
+
+.qr-section img{
+    width:18mm;
+    height:18mm;
+    border:2px solid #fff;
+    background:#fff;
+    padding:1mm;
+}
+
+.qr-section h2{
+    margin-top:1mm;
+    font-size:8pt;
+    font-weight:800;
+    color:#000;
+}
+
+/* =========================
+   PRIZE TITLES
+========================= */
+.prize-title{
+    position:absolute;
+    z-index:20;
+    text-align:center;
+}
+
+.prize-title h2{
+    color:white;
+    padding:1.5mm 3mm;
+    border-radius:3mm;
+    font-size:8pt;
+    font-weight:800;
+    text-shadow:1px 1px 2px rgba(0,0,0,0.4);
+    box-shadow:0 2px 6px rgba(0,0,0,0.25);
+}
+
+.first{
+    top:34mm;
+    left:50%;
+    transform:translateX(-50%);
+}
+
+.first h2{
+    background:linear-gradient(135deg,#FFD700,#FFA000);
+    color:#000;
+}
+
+.second{
+    top:38mm;
+    left:6mm;
+}
+
+.second h2{
+    background:linear-gradient(135deg,#d7d7d7,#9e9e9e);
+    color:#000;
+}
+
+.third{
+    top:38mm;
+    right:6mm;
+}
+
+.third h2{
+    background:linear-gradient(135deg,#b87333,#8d5524);
+}
+
+/* =========================
+   CIRCLE IMAGES
+========================= */
+.circle{
+    width:20mm;
+    height:20mm;
+    border-radius:50%;
+    overflow:hidden;
+    position:absolute;
+    border:1px solid rgba(255,255,255,0.9);
+    z-index:10;
+}
+
+.circle img{
+    width:100%;
+    height:100%;
+    object-fit:cover;
+}
+
+.circle-left{
+    top:10mm;
+    left:30mm;
+}
+
+.circle-right{
+    top:10mm;
+    right:30mm;
+}
+
+/* =========================
+   CARS
+========================= */
+.car{
+    position:absolute;
+    z-index:15;
+}
+
+.car-left{
+    width:38mm;
+    bottom:10mm;
+    left:3mm;
+}
+
+.car-center{
+    width:55mm;
+    bottom:2mm;
+    left:50%;
+    transform:translateX(-50%);
+}
+
+.car-right{
+    width:38mm;
+    bottom:10mm;
+    right:3mm;
+}
+
+/* =========================
+   FOOTER
+========================= */
+.footer{
+    position:absolute;
+    bottom:2mm;
+    width:100%;
+    display:flex;
+    justify-content:space-between;
+    gap:3mm;
+    padding:0 3mm;
+    z-index:20;
+}
+
+.footer div{
+    font-size:5pt;
+    font-weight:700;
+    color:#000;
+    max-width:48%;
+    line-height:1.2;
+    background:rgba(255,255,255,0.7);
+    padding:1mm;
+    border-radius:2mm;
+}
+
+</style>
+</head>
+
+<body>
+
+<div class="ticket">
+
+    <!-- BACKGROUND -->
+    <img class="bg-temple"
+         src="{% static 'images/bg-img.png' %}">
+
+    <!-- LOGO -->
+    <img class="logo"
+         src="{% static 'images/logo.png' %}">
+
+    <!-- HEADER -->
+    <div class="header">
+        <h1>
+            KARCHU PERTH<br>
+            FUND RAISING LOTTERY
+        </h1>
+    </div>
+
+    <!-- QR CODE -->
+    <div class="qr-section">
+        <img src="{{ qr_image }}" alt="QR Code">
+        <h2>{{ ticket.ticket_number }}</h2>
+    </div>
+
+    <!-- LEFT CIRCLE -->
+    <div class="circle circle-left">
+        <img src="{% static 'images/left-circle.jpg' %}">
+    </div>
+
+    <!-- RIGHT CIRCLE -->
+    <div class="circle circle-right">
+        <img src="{% static 'images/right-circle.jpg' %}">
+    </div>
+
+    <!-- PRIZES -->
+    <div class="prize-title second">
+        <h2>🥈 2nd Prize</h2>
+    </div>
+
+    <div class="prize-title first">
+        <h2>🏆 1st Prize</h2>
+    </div>
+
+    <div class="prize-title third">
+        <h2>🥉 3rd Prize</h2>
+    </div>
+
+    <!-- CARS -->
+    <img class="car car-left"
+         src="{% static 'images/rav4.png' %}">
+
+    <img class="car car-center"
+         src="{% static 'images/prado.png' %}">
+
+    <img class="car car-right"
+         src="{% static 'images/corolla.png' %}">
+
+    <!-- FOOTER -->
+    <div class="footer">
+
+        <div>
+            Please scan the QR code and submit your full name and phone number.
+            This ticket number belongs to you.
+        </div>
+
+        <div>
+            20 Lucky Winners Will Take Home $5000 Each
+        </div>
+
+    </div>
+
+</div>
+
+</body>
+</html>

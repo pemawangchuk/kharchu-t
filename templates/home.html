@@ -1,0 +1,1104 @@
+{% load static %}
+
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>Kharchu Perth Lottery</title>
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+
+<style>
+
+*{
+    margin:0;
+    padding:0;
+    box-sizing:border-box;
+}
+
+html{
+    scroll-behavior:smooth;
+}
+
+body{
+    font-family:'Poppins',sans-serif;
+    background:#f5f7fb;
+    color:#222;
+    overflow-x:hidden;
+}
+
+/* =========================
+SCROLL BAR
+========================= */
+
+::-webkit-scrollbar{
+    width:8px;
+}
+
+::-webkit-scrollbar-thumb{
+    background:#ff9800;
+    border-radius:20px;
+}
+
+/* =========================
+HEADER
+========================= */
+
+header{
+    width:100%;
+    position:fixed;
+    top:0;
+    left:0;
+    z-index:1000;
+    background:rgba(7,10,25,0.85);
+    backdrop-filter:blur(14px);
+    border-bottom:1px solid rgba(255,255,255,0.08);
+}
+
+.navbar{
+    max-width:1300px;
+    margin:auto;
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+    padding:18px 25px;
+}
+
+
+
+/* LOGO */
+.logo{
+    color:#fff;
+    font-size:28px;
+    font-weight:700;
+}
+
+.logo span{
+    color:#ffb300;
+}
+
+/* NAV LINKS (DESKTOP) */
+.nav-links{
+    display:flex;
+    gap:25px;
+}
+
+.nav-links a{
+    color:#fff;
+    text-decoration:none;
+    font-size:15px;
+    transition:0.3s;
+}
+
+.nav-links a:hover{
+    color:#ffb300;
+}
+
+/* BUTTON */
+.nav-btn{
+    padding:12px 20px;
+    background:#ff9800;
+    color:#fff;
+    border:none;
+    border-radius:8px;
+    cursor:pointer;
+    font-weight:600;
+}
+
+/* HAMBURGER ICON */
+.menu-icon{
+    display:none;
+    font-size:28px;
+    color:#fff;
+    cursor:pointer;
+}
+
+/* HIDE CHECKBOX */
+#menu-toggle{
+    display:none;
+}
+
+/* =========================
+MOBILE VIEW
+========================= */
+@media(max-width:768px){
+
+    .menu-icon{
+        display:block;
+    }
+
+    /* HIDE NAV INITIALLY */
+    .nav-links{
+        position:absolute;
+        top:70px;
+        left:0;
+        right:0;
+        background:#0f172a;
+        flex-direction:column;
+        text-align:center;
+        gap:15px;
+        padding:20px;
+        display:none;
+    }
+
+    /* SHOW MENU WHEN CHECKED */
+    #menu-toggle:checked ~ .nav-links{
+        display:flex;
+    }
+
+    /* BUTTON STACK */
+    .nav-btn{
+        display:none;
+    }
+}
+
+
+.logo{
+    color:white;
+    font-size:30px;
+    font-weight:800;
+    letter-spacing:1px;
+}
+
+.logo span{
+    color:#ffb300;
+}
+
+.nav-links{
+    display:flex;
+    align-items:center;
+    gap:30px;
+}
+
+.nav-links a{
+    text-decoration:none;
+    color:white;
+    font-size:15px;
+    font-weight:500;
+    transition:0.3s;
+}
+
+.nav-links a:hover{
+    color:#ffb300;
+}
+
+.nav-btn{
+    padding:13px 25px;
+    background:linear-gradient(135deg,#ff9800,#ff6f00);
+    border:none;
+    color:white;
+    border-radius:12px;
+    font-weight:600;
+    cursor:pointer;
+    transition:0.3s;
+    box-shadow:0 10px 20px rgba(255,152,0,0.3);
+}
+
+.nav-btn:hover{
+    transform:translateY(-2px);
+}
+
+/* =========================
+HERO
+========================= */
+
+.hero{
+    min-height:50vh;
+    background:
+    linear-gradient(rgba(0,0,0,0.75),rgba(0,0,0,0.75)),
+    url('{% static 'images/bg-img.png'%}');
+    background-size:cover;
+    background-position:center;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    text-align:center;
+    padding:140px 20px 100px;
+    position:relative;
+}
+
+.hero::before{
+    content:'';
+    position:absolute;
+    width:500px;
+    height:500px;
+    background:rgba(255,152,0,0.15);
+    border-radius:50%;
+    filter:blur(100px);
+    top:10%;
+    left:10%;
+}
+
+.hero::after{
+    content:'';
+    position:absolute;
+    width:400px;
+    height:400px;
+    background:rgba(26,35,126,0.2);
+    border-radius:50%;
+    filter:blur(100px);
+    bottom:10%;
+    right:10%;
+}
+
+.hero-content{
+    max-width:900px;
+    position:relative;
+    z-index:10;
+}
+
+.hero-badge{
+    display:inline-block;
+    padding:10px 20px;
+    background:rgba(255,255,255,0.1);
+    border:1px solid rgba(255,255,255,0.15);
+    border-radius:50px;
+    color:#ffb300;
+    margin-bottom:25px;
+    font-size:14px;
+    backdrop-filter:blur(10px);
+}
+
+.hero h1{
+    font-size:78px;
+    line-height:1.05;
+    color:white;
+    margin-bottom:25px;
+    font-weight:800;
+}
+
+.hero h1 span{
+    color:#ffb300;
+}
+
+.hero p{
+    color:#d6d6d6;
+    font-size:18px;
+    line-height:1.9;
+    max-width:760px;
+    margin:auto;
+    margin-bottom:40px;
+}
+
+.hero-buttons{
+    display:flex;
+    justify-content:center;
+    flex-wrap:wrap;
+    gap:20px;
+}
+
+.primary-btn{
+    padding:16px 38px;
+    border:none;
+    border-radius:14px;
+    background:linear-gradient(135deg,#ff9800,#ff6f00);
+    color:white;
+    font-size:16px;
+    font-weight:600;
+    cursor:pointer;
+    transition:0.3s;
+    box-shadow:0 12px 25px rgba(255,152,0,0.35);
+}
+
+.primary-btn:hover{
+    transform:translateY(-4px);
+}
+
+.secondary-btn{
+    padding:16px 38px;
+    border:2px solid rgba(255,255,255,0.25);
+    border-radius:14px;
+    background:rgba(255,255,255,0.08);
+    color:white;
+    font-size:16px;
+    font-weight:600;
+    cursor:pointer;
+    transition:0.3s;
+    backdrop-filter:blur(10px);
+}
+
+.secondary-btn:hover{
+    background:white;
+    color:#111;
+}
+
+/* =========================
+LIVE STATS
+========================= */
+
+.stats{
+    margin-top:-80px;
+    position:relative;
+    z-index:50;
+}
+
+.stats-container{
+    max-width:1300px;
+    margin:auto;
+    display:grid;
+    grid-template-columns:repeat(auto-fit,minmax(250px,1fr));
+    gap:25px;
+    padding:0 25px;
+}
+
+.stat-card{
+    background:white;
+    padding:40px 25px;
+    border-radius:24px;
+    text-align:center;
+    box-shadow:0 15px 35px rgba(0,0,0,0.08);
+    transition:0.3s;
+}
+
+.stat-card:hover{
+    transform:translateY(-8px);
+}
+
+.stat-icon{
+    font-size:40px;
+    margin-bottom:18px;
+}
+
+.stat-card h2{
+    font-size:42px;
+    color:#1a237e;
+    margin-bottom:8px;
+}
+
+.stat-card p{
+    color:#777;
+}
+
+/* =========================
+SECTION
+========================= */
+
+.section{
+    padding:110px 20px;
+}
+
+.container{
+    max-width:1300px;
+    margin:auto;
+}
+
+.section-title{
+    text-align:center;
+    margin-bottom:70px;
+}
+
+.section-title h2{
+    font-size:48px;
+    margin-bottom:15px;
+    color:#111827;
+}
+
+.section-title p{
+    max-width:720px;
+    margin:auto;
+    color:#6b7280;
+    line-height:1.8;
+}
+
+/* =========================
+FEATURES
+========================= */
+
+.features{
+    display:grid;
+    grid-template-columns:repeat(auto-fit,minmax(320px,1fr));
+    gap:30px;
+}
+
+.feature-card{
+    background:white;
+    padding:45px 35px;
+    border-radius:25px;
+    transition:0.4s;
+    position:relative;
+    overflow:hidden;
+    box-shadow:0 8px 25px rgba(0,0,0,0.05);
+}
+
+.feature-card:hover{
+    transform:translateY(-12px);
+}
+
+.feature-card::before{
+    content:'';
+    position:absolute;
+    top:-60px;
+    right:-60px;
+    width:180px;
+    height:180px;
+    background:rgba(255,152,0,0.08);
+    border-radius:50%;
+}
+
+.feature-icon{
+    width:90px;
+    height:90px;
+    border-radius:22px;
+    background:linear-gradient(135deg,#1a237e,#283593);
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    color:white;
+    font-size:40px;
+    margin-bottom:30px;
+}
+
+.feature-card h3{
+    font-size:28px;
+    margin-bottom:15px;
+}
+
+.feature-card p{
+    color:#666;
+    line-height:1.9;
+}
+
+/* =========================
+PRIZES
+========================= */
+
+.prize-section{
+    background:#111827;
+    position:relative;
+    overflow:hidden;
+}
+
+.prize-section::before{
+    content:'';
+    position:absolute;
+    width:500px;
+    height:500px;
+    background:rgba(255,152,0,0.08);
+    border-radius:50%;
+    filter:blur(120px);
+    top:-200px;
+    left:-150px;
+}
+
+.prize-grid{
+    display:grid;
+    grid-template-columns:repeat(auto-fit,minmax(320px,1fr));
+    gap:30px;
+}
+
+.prize-card{
+    background:white;
+    border-radius:28px;
+    overflow:hidden;
+    text-align:center;
+    transition:0.4s;
+    box-shadow:0 15px 30px rgba(0,0,0,0.1);
+}
+
+.prize-card:hover{
+    transform:translateY(-10px);
+}
+
+.prize-image{
+    height:250px;
+    background:#f8fafc;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    padding:20px;
+}
+
+.prize-image img{
+    width:100%;
+    max-width:280px;
+    object-fit:contain;
+    transition:0.4s;
+}
+
+.prize-card:hover img{
+    transform:scale(1.05);
+}
+
+.prize-content{
+    padding:35px;
+}
+
+.prize-content h3{
+    font-size:32px;
+    margin-bottom:15px;
+}
+
+.prize-content p{
+    color:#666;
+    line-height:1.8;
+}
+
+/* =========================
+PROCESS
+========================= */
+
+.process{
+    display:grid;
+    grid-template-columns:repeat(auto-fit,minmax(250px,1fr));
+    gap:25px;
+}
+
+.process-card{
+    background:white;
+    padding:40px 30px;
+    border-radius:24px;
+    text-align:center;
+    box-shadow:0 10px 25px rgba(0,0,0,0.05);
+}
+
+.process-number{
+    width:70px;
+    height:70px;
+    background:linear-gradient(135deg,#ff9800,#ff6f00);
+    color:white;
+    border-radius:50%;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    font-size:28px;
+    font-weight:700;
+    margin:auto;
+    margin-bottom:25px;
+}
+
+/* =========================
+CTA
+========================= */
+
+.cta{
+    background:
+    linear-gradient(rgba(0,0,0,0.75),rgba(0,0,0,0.75)),
+   url('{% static 'images/bg-img.png'%}');
+    background-size:cover;
+    background-position:center;
+    padding:120px 20px;
+    text-align:center;
+    color:white;
+}
+
+.cta h2{
+    font-size:58px;
+    margin-bottom:20px;
+}
+
+.cta p{
+    max-width:700px;
+    margin:auto;
+    margin-bottom:35px;
+    line-height:1.9;
+    color:#ddd;
+}
+
+/* =========================
+FOOTER
+========================= */
+
+footer{
+    background:#020617;
+    color:white;
+    padding:80px 20px 30px;
+}
+
+.footer-container{
+    max-width:1300px;
+    margin:auto;
+    display:grid;
+    grid-template-columns:repeat(auto-fit,minmax(250px,1fr));
+    gap:40px;
+}
+
+.footer-box h3{
+    font-size:26px;
+    margin-bottom:25px;
+}
+
+.footer-box p,
+.footer-box a{
+    color:#cbd5e1;
+    text-decoration:none;
+    line-height:2;
+}
+
+.footer-box a:hover{
+    color:#ffb300;
+}
+
+.footer-bottom{
+    margin-top:50px;
+    padding-top:25px;
+    border-top:1px solid rgba(255,255,255,0.1);
+    text-align:center;
+    color:#94a3b8;
+}
+
+/* =========================
+RESPONSIVE
+========================= */
+
+@media(max-width:992px){
+
+    .hero h1{
+        font-size:58px;
+    }
+
+}
+
+@media(max-width:768px){
+
+    .nav-links{
+        display:none;
+    }
+
+    .hero h1{
+        font-size:42px;
+    }
+
+    .hero p{
+        font-size:16px;
+    }
+
+    .section-title h2{
+        font-size:36px;
+    }
+
+    .cta h2{
+        font-size:40px;
+    }
+
+}
+/* =========================
+HEADER RESPONSIVE
+========================= */
+
+</style>
+
+</head>
+
+<body>
+
+<!-- =========================
+HEADER
+========================= -->
+<header>
+
+    <div class="navbar">
+
+        <div class="logo">
+            Kharchu <span>Lottery</span>
+        </div>
+
+        <!-- MOBILE MENU TOGGLE -->
+        <input type="checkbox" id="menu-toggle" />
+
+        <label for="menu-toggle" class="menu-icon">
+            ☰
+        </label>
+
+        <div class="nav-links">
+
+            <a href="#">Home</a>
+            <a href="#">Tickets</a>
+            <a href="#">Prizes</a>
+            <a href="#">Winners</a>
+            <a href="#">Contact</a>
+
+        </div>
+
+        <button class="nav-btn">
+            Buy Ticket
+        </button>
+
+    </div>
+
+</header>
+
+<!-- =========================
+HERO
+========================= -->
+
+<section class="hero">
+
+    <div class="hero-content">
+
+        <div class="hero-badge">
+            🎉 Trusted Digital Lottery Platform In Perth
+        </div>
+
+        <h1>
+            Win Your Dream <span>Luxury Car</span> Today
+        </h1>
+
+        <p>
+            Join thousands of participants across Perth in the most exciting
+            community-powered lottery system. Secure QR ticketing, instant verification,
+            and amazing prizes every month.
+        </p>
+
+        <div class="hero-buttons">
+
+            <button class="primary-btn">
+                Buy Ticket Now
+            </button>
+
+            <button class="secondary-btn">
+                View Winners
+            </button>
+
+        </div>
+
+    </div>
+
+</section>
+
+<!-- =========================
+STATS
+========================= -->
+
+<section class="stats">
+
+    <div class="stats-container">
+
+        <div class="stat-card">
+            <div class="stat-icon">🎟</div>
+            <h2>{{ total_tickets }}</h2>
+            <p>Total Tickets</p>
+        </div>
+
+        <div class="stat-card">
+            <div class="stat-icon">🏆</div>
+            <h2>{{ assigned_tickets }}</h2>
+            <p>Total Tickets Sold</p>
+        </div>
+
+        <div class="stat-card">
+            <div class="stat-icon">🚗</div>
+            <h2>0k</h2>
+            <p>Lucky Winners</p>
+        </div>
+
+        <div class="stat-card">
+            <div class="stat-icon">🔒</div>
+            <h2>100%</h2>
+            <p>Secure QR System</p>
+        </div>
+
+    </div>
+
+</section>
+
+<!-- =========================
+FEATURES
+========================= -->
+
+<section class="section">
+
+    <div class="container">
+
+        <div class="section-title">
+
+            <h2>Why Choose Kharchu Lottery?</h2>
+
+            <p>
+                Modern technology meets community excitement with secure digital ticketing,
+                live QR validation, and transparent prize management.
+            </p>
+
+        </div>
+
+        <div class="features">
+
+            <div class="feature-card">
+
+                <div class="feature-icon">🎟</div>
+
+                <h3>Secure Ticketing</h3>
+
+                <p>
+                    Every ticket is uniquely generated with advanced QR validation
+                    to prevent duplication and fraud.
+                </p>
+
+            </div>
+
+            <div class="feature-card">
+
+                <div class="feature-icon">📱</div>
+
+                <h3>Instant QR Scan</h3>
+
+                <p>
+                    Lightning-fast ticket verification powered by a high-performance real-time scanning system built for speed, accuracy, and reliability.
+                </p>
+
+            </div>
+
+            <div class="feature-card">
+
+                <div class="feature-icon">🏆</div>
+
+                <h3>Luxury Prizes</h3>
+
+                <p>
+                    Participate for a chance to win luxury vehicles,
+                    cash rewards, and exciting community giveaways.
+                </p>
+
+            </div>
+
+        </div>
+
+    </div>
+
+</section>
+
+<!-- =========================
+PRIZES
+========================= -->
+
+<section class="section prize-section">
+
+    <div class="container">
+
+        <div class="section-title">
+
+            <h2 style="color:white;">
+                Featured Prize Vehicles
+            </h2>
+
+            <p style="color:#cbd5e1;">
+                Premium vehicles and exciting prizes waiting for lucky winners.
+            </p>
+
+        </div>
+
+        <div class="prize-grid">
+
+            <div class="prize-card">
+
+                <div class="prize-image">
+                    <img src="{% static 'images/prado.png' %}">
+                </div>
+
+                <div class="prize-content">
+
+                    <h3>1st Prize</h3>
+
+                    <p>
+                        Brand new luxury SUV with premium features and
+                        advanced technology package included.
+                    </p>
+
+                </div>
+
+            </div>
+
+            <div class="prize-card">
+
+                <div class="prize-image">
+                    <img src="{% static 'images/rav4.png' %}">
+                </div>
+
+                <div class="prize-content">
+
+                    <h3>2nd Prize</h3>
+
+                    <p>
+                        Stylish and fuel-efficient SUV designed for modern
+                        city driving and family comfort.
+                    </p>
+
+                </div>
+
+            </div>
+
+            <div class="prize-card">
+
+                <div class="prize-image">
+                    <img src="{% static 'images/corolla.png' %}">
+                </div>
+
+                <div class="prize-content">
+
+                    <h3>3rd Prize</h3>
+
+                    <p>
+                        Reliable modern sedan with advanced safety features
+                        and sleek premium interior design.
+                    </p>
+
+                </div>
+
+            </div>
+
+        </div>
+
+    </div>
+
+</section>
+
+<!-- =========================
+HOW IT WORKS
+========================= -->
+
+<section class="section">
+
+    <div class="container">
+
+        <div class="section-title">
+
+            <h2>How It Works</h2>
+
+            <p>
+                Simple, fast, and secure process designed for everyone.
+            </p>
+
+        </div>
+
+        <div class="process">
+
+    <!-- STEP 1 -->
+    <div class="process-card">
+
+        <div class="process-number">1</div>
+
+        <h3>Purchase Ticket</h3>
+
+        <p>
+            Buy your official Kharchu Perth Lottery ticket
+            from our authorized sellers and community events.
+        </p>
+
+    </div>
+
+    <!-- STEP 2 -->
+    <div class="process-card">
+
+        <div class="process-number">2</div>
+
+        <h3>Receive Secure QR Ticket</h3>
+
+        <p>
+            Every ticket includes a unique secure QR code
+            and ticket number to prevent duplicate or fake entries.
+        </p>
+
+    </div>
+
+    <!-- STEP 3 -->
+    <div class="process-card">
+
+        <div class="process-number">3</div>
+
+        <h3>Register Your Details</h3>
+
+        <p>
+            Register your full name and phone number
+            to securely claim ownership of your ticket
+            and participate in the official lottery draw.
+        </p>
+
+    </div>
+
+    <!-- STEP 4 -->
+    <div class="process-card">
+
+        <div class="process-number">4</div>
+
+        <h3>Winner Announcement</h3>
+
+        <p>
+            Winning ticket numbers are announced publicly,
+            and winners are contacted directly to claim prizes.
+        </p>
+
+    </div>
+
+</div>
+
+    </div>
+
+</section>
+
+<!-- =========================
+CTA
+========================= -->
+
+<section class="cta">
+
+    <h2>
+        Ready To Become The Next Winner?
+    </h2>
+
+    <p>
+        Join Perth’s trusted lottery platform and experience secure,
+        modern, and exciting community-powered digital lottery draws.
+    </p>
+
+    <button class="primary-btn">
+        Buy Ticket Now
+    </button>
+
+</section>
+
+<!-- =========================
+FOOTER
+========================= -->
+
+<footer>
+
+    <div class="footer-container">
+
+        <div class="footer-box">
+
+            <h3>Kharchu Lottery</h3>
+
+            <p>
+                Premium community lottery platform powered by secure
+                digital technology and QR-based ticket verification.
+            </p>
+
+        </div>
+
+        <div class="footer-box">
+
+            <h3>Quick Links</h3>
+
+            <a href="#">Home</a><br>
+            <a href="#">Tickets</a><br>
+            <a href="#">Results</a><br>
+            <a href="#">Contact</a>
+
+        </div>
+
+        <div class="footer-box">
+
+            <h3>Contact</h3>
+
+            <p>Email: support@kharchulottery.com</p>
+            <p>Phone: +61 4XX XXX XXX</p>
+            <p>Perth, Western Australia</p>
+
+        </div>
+
+    </div>
+
+    <div class="footer-bottom">
+        © 2026 Kharchu Perth Lottery. All Rights Reserved.
+    </div>
+
+</footer>
+
+</body>
+</html>

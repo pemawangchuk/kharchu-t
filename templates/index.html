@@ -1,0 +1,174 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Perth Community Lottery</title>
+
+<style>
+body {
+    margin: 0;
+    font-family: Arial;
+    background: #f4f6f8;
+}
+
+/* HEADER */
+header {
+    background: linear-gradient(135deg, #1a237e, #283593);
+    color: white;
+    text-align: center;
+    padding: 20px;
+}
+
+/* HERO */
+.hero {
+    text-align: center;
+    padding: 30px;
+    background: white;
+}
+
+.btn {
+    padding: 10px 20px;
+    background: #ff6f00;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+}
+
+/* GRID */
+.container {
+    max-width: 1100px;
+    margin: auto;
+    padding: 20px;
+}
+
+.cards {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+    gap: 15px;
+}
+
+/* CARD */
+.card {
+    background: white;
+    padding: 15px;
+    border-radius: 10px;
+    text-align: center;
+    box-shadow: 0 3px 10px rgba(0,0,0,0.1);
+}
+
+.status {
+    font-weight: bold;
+}
+
+.available { color: green; }
+.assigned { color: red; }
+
+.small {
+    font-size: 12px;
+    color: #777;
+}
+
+/* PAGINATION */
+.pagination {
+    text-align: center;
+    margin-top: 20px;
+}
+
+.pagination a {
+    display: inline-block;
+    padding: 8px 12px;
+    margin: 3px;
+    border-radius: 5px;
+    text-decoration: none;
+    background: #ddd;
+    color: #333;
+}
+
+.pagination a.active {
+    background: #1a237e;
+    color: white;
+}
+
+.pagination a:hover {
+    background: #283593;
+    color: white;
+}
+
+/* FOOTER */
+footer {
+    background: #1a237e;
+    color: white;
+    text-align: center;
+    padding: 15px;
+    margin-top: 30px;
+}
+</style>
+
+</head>
+
+<body>
+
+<header>
+    <h1>🎟 Perth Community Lottery</h1>
+</header>
+
+</section>
+
+<!-- TICKETS -->
+<div class="container">
+
+    <h2 style="text-align:center;">Tickets (Page {{ page_obj.number }})</h2>
+
+    <div class="cards">
+
+        {% for item in tickets %}
+
+        <div class="card">
+
+            <h3>🎟 {{ item.ticket.ticket_number }}</h3>
+
+            {% if item.is_assigned %}
+                <div class="status assigned">❌ Assigned</div>
+                <p>{{ item.attendee.name }}</p>
+            {% else %}
+                <div class="status available">✅ Available</div>
+                <p class="small">Not used yet</p>
+            {% endif %}
+
+            <img src="{{ item.qr_image }}" width="120">
+
+            <p class="small">{{ item.ticket.created_at }}</p>
+
+        </div>
+
+        {% empty %}
+            <p>No tickets found</p>
+        {% endfor %}
+
+    </div>
+
+    <!-- PAGINATION -->
+    <div class="pagination">
+
+        {% if page_obj.has_previous %}
+            <a href="?page={{ page_obj.previous_page_number }}">⬅ Prev</a>
+        {% endif %}
+
+        <a class="active">{{ page_obj.number }}</a>
+
+        {% if page_obj.has_next %}
+            <a href="?page={{ page_obj.next_page_number }}">Next ➡</a>
+        {% endif %}
+
+    </div>
+
+</div>
+
+<footer>
+    <p>© 2026 Perth Community Lottery</p>
+</footer>
+
+</body>
+</html>

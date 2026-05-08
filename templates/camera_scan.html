@@ -1,0 +1,128 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>Scan Ticket</title>
+
+<script src="https://unpkg.com/html5-qrcode"></script>
+
+<style>
+/* =========================
+   GLOBAL STYLE
+========================= */
+body {
+    margin: 0;
+    font-family: Arial, sans-serif;
+    background: linear-gradient(135deg, #1a237e, #283593);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 100vh;
+}
+
+/* =========================
+   MAIN CARD
+========================= */
+.container {
+    background: #fff;
+    padding: 20px;
+    border-radius: 12px;
+    width: 100%;
+    max-width: 380px;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+    text-align: center;
+}
+
+/* TITLE */
+h2 {
+    margin-bottom: 15px;
+    color: #1a237e;
+}
+
+/* SCANNER BOX */
+#reader {
+    width: 100%;
+    border-radius: 10px;
+    overflow: hidden;
+}
+
+/* STATUS TEXT */
+.status {
+    margin-top: 10px;
+    font-size: 14px;
+    color: #555;
+}
+
+/* LOADING EFFECT */
+.loader {
+    margin-top: 10px;
+    font-size: 13px;
+    color: #ff6f00;
+}
+
+/* MOBILE RESPONSIVE */
+@media (max-width: 480px) {
+    .container {
+        margin: 15px;
+        padding: 15px;
+    }
+}
+</style>
+
+</head>
+
+<body>
+
+<!-- =========================
+     MAIN UI
+========================= -->
+<div class="container">
+
+    <h2>🎟 Scan Ticket</h2>
+
+    <!-- QR Scanner -->
+    <div id="reader"></div>
+
+    <!-- Status -->
+    <div class="status">Point camera at QR code</div>
+
+    <div class="loader">Scanning...</div>
+
+</div>
+
+<script>
+
+/* =========================
+   SUCCESS CALLBACK
+========================= */
+function onScanSuccess(text) {
+
+    // stop scanner after success (important)
+    scanner.clear();
+
+    // redirect to scanned ticket URL
+    window.location.href = text;
+}
+
+/* =========================
+   QR SCANNER INIT
+========================= */
+let scanner = new Html5QrcodeScanner(
+    "reader",
+    {
+        fps: 10,        // scanning speed
+        qrbox: 250      // scan box size
+    }
+);
+
+/* =========================
+   START SCANNER
+========================= */
+scanner.render(onScanSuccess);
+
+</script>
+
+</body>
+</html>
