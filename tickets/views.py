@@ -130,11 +130,13 @@ def home(request):
 @user_passes_test(is_superadmin)
 def create_ticket(request):
 
-    # create DB ticket
+    # -----------------------------
+    # CREATE DATABASE TICKET
+    # -----------------------------
     ticket = Ticket.objects.create()
 
     # -----------------------------
-    # REDIS CACHE (FAST LOOKUP)
+    # REDIS CACHE
     # -----------------------------
     redis_client.set(
         f"ticket:{ticket.ticket_number}",
@@ -143,157 +145,229 @@ def create_ticket(request):
     )
 
     # -----------------------------
-    # INCREMENT DASHBOARD COUNTER
+    # DASHBOARD COUNTER
     # -----------------------------
     redis_client.incr("total_tickets")
 
     # -----------------------------
-    # QR GENERATION
+    # QR CODE GENERATION
     # -----------------------------
-    qr_folder = os.path.join(settings.MEDIA_ROOT, "qr_codes")
+    qr_folder = os.path.join(
+        settings.MEDIA_ROOT,
+        "qr_codes"
+    )
+
     os.makedirs(qr_folder, exist_ok=True)
 
-    qr_url = request.build_absolute_uri(f"/scan/{ticket.ticket_id}/")
+    qr_url = request.build_absolute_uri(
+        f"/scan/{ticket.ticket_id}/"
+    )
+
     qr_img = qrcode.make(qr_url)
 
-    qr_img.save(os.path.join(qr_folder, f"{ticket.ticket_id}.png"))
+    qr_path = os.path.join(
+        qr_folder,
+        f"{ticket.ticket_id}.png"
+    )
+
+    qr_img.save(qr_path)
+
+    # -----------------------------
+    # HTML TEMPLATE
+    # -----------------------------
+    html_string = render_to_string(
+        "ticket.html",
+        {
+            "ticket": ticket,
+            "qr_image": f"{settings.MEDIA_URL}qr_codes/{ticket.ticket_id}.png"
+        }
+    )
+
+    # -----------------------------
+    # PDF GENERATION
+    # -----------------------------
+    output_folder = os.path.join(
+        settings.MEDIA_ROOT,
+        "tickets"
+    )
+
+    os.makedirs(output_folder, exist_ok=True)
+
+    pdf_path = os.path.join(
+        output_folder,
+        f"{ticket.ticket_number}.pdf"
+    )
+
+    HTML(
+        string=html_string,
+        base_url=request.build_absolute_uri("/")
+    ).write_pdf(pdf_path)
 
     # -----------------------------
     # KAFKA EVENT
     # -----------------------------
     send_ticket_created(ticket)
 
-    return render(request, "ticket.html", {
-        "ticket": ticket,
-        "qr_image": f"{settings.MEDIA_URL}qr_codes/{ticket.ticket_id}.png"
-    })
-
+    # -----------------------------
+    # RENDER RESPONSE
+    # -----------------------------
+    return render(
+        request,
+        "ticket.html",
+        {
+            "ticket": ticket,
+            "qr_image": f"{settings.MEDIA_URL}qr_codes/{ticket.ticket_id}.png"
+        }
+    )
 
 # =========================
 # 3. SCAN TICKET (REDIS + KAFKA + ATOMIC SAFETY)
 # =========================
+from django.db import transaction
+from django.http import HttpResponse
+from django.shortcuts import get_object_or_404, render
+from django.contrib.auth.decorators import login_required, user_passes_test
+from redis.exceptions import LockError
+
 @login_required
 @user_passes_test(is_superadmin)
 def scan_ticket(request, ticket_id):
 
-    lock_key = f"scan:{ticket_id}"
-
-    # -----------------------------
-    # REDIS FAST CHECK
-    # -----------------------------
-    if redis_client.get(lock_key):
-        return HttpResponse("❌ Ticket already scanned")
-
     ticket = get_object_or_404(Ticket, ticket_id=ticket_id)
 
-    # DB safety check
-    if Attendee.objects.filter(ticket=ticket).exists():
-        redis_client.set(lock_key, "USED", ex=86400)
-        return HttpResponse("❌ Ticket already used")
+    lock_key = f"scan_lock:{ticket_id}"
+    used_key = f"scan_used:{ticket_id}"
+
+    # -----------------------------------
+    # ALREADY SCANNED CHECK
+    # -----------------------------------
+    if redis_client.get(used_key):
+        return HttpResponse("❌ Ticket already scanned")
 
     if request.method == "POST":
 
         name = request.POST.get("name")
         phone = request.POST.get("phone")
 
-        with transaction.atomic():
+        # -----------------------------------
+        # REDIS ATOMIC LOCK
+        # -----------------------------------
+        acquired = redis_client.set(
+            lock_key,
+            "LOCKED",
+            nx=True,   # only set if not exists
+            ex=10      # auto expire after 10 sec
+        )
 
-            # double check race condition
-            if Attendee.objects.filter(ticket=ticket).exists():
-                return HttpResponse("❌ Already assigned")
+        # another request already processing
+        if not acquired:
+            return HttpResponse("⏳ Request already processing")
 
-            attendee = Attendee.objects.create(
-                ticket=ticket,
-                name=name,
-                phone=phone
-            )
+        try:
 
-            # -----------------------------
-            # REDIS UPDATE (REAL TIME)
-            # -----------------------------
-            redis_client.incr("assigned_tickets")
-            redis_client.set(lock_key, "USED", ex=86400)
+            with transaction.atomic():
 
-            # -----------------------------
-            # KAFKA EVENT
-            # -----------------------------
-            send_ticket_scanned(attendee)
+                # DB FINAL SAFETY CHECK
+                if Attendee.objects.filter(ticket=ticket).exists():
 
-        return HttpResponse("✅ Check-in successful")
+                    redis_client.set(
+                        used_key,
+                        "USED",
+                        ex=86400
+                    )
 
-    return render(request, "scan.html", {"ticket": ticket})
+                    return HttpResponse("❌ Ticket already used")
 
+                attendee = Attendee.objects.create(
+                    ticket=ticket,
+                    name=name,
+                    phone=phone
+                )
+
+                # -----------------------------------
+                # REDIS UPDATE
+                # -----------------------------------
+                redis_client.incr("assigned_tickets")
+
+                redis_client.set(
+                    used_key,
+                    "USED",
+                    ex=86400
+                )
+
+                # -----------------------------------
+                # KAFKA EVENT
+                # -----------------------------------
+                send_ticket_scanned(attendee)
+
+            return render(request, "ticket_lookup.html")
+
+        finally:
+            # remove processing lock
+            redis_client.delete(lock_key)
+
+    return render(request, "scan.html", {
+        "ticket": ticket
+    })
 
 # =========================
 # 4. BULK TICKET GENERATION (FAST + SAFE + UNIQUE)
 # =========================
+from .tasks import process_ticket
+
+
 @login_required
 @user_passes_test(is_superadmin)
 def generate_40_tickets(request):
 
-    output_folder = os.path.join(settings.MEDIA_ROOT, "tickets")
-    qr_folder = os.path.join(settings.MEDIA_ROOT, "qr_codes")
-
-    os.makedirs(output_folder, exist_ok=True)
-    os.makedirs(qr_folder, exist_ok=True)
-
     existing_numbers = set(
-        Ticket.objects.values_list("ticket_number", flat=True)
+        Ticket.objects.values_list(
+            "ticket_number",
+            flat=True
+        )
     )
 
     ticket_objects = []
 
-    # generate unique tickets
-    for _ in range(50):
+    while len(ticket_objects) < 50:
 
-        while True:
-            number = ''.join(str(secrets.randbelow(10)) for _ in range(10))
-
-            if number not in existing_numbers:
-                existing_numbers.add(number)
-                break
-
-        ticket_objects.append(Ticket(ticket_number=number))
-
-    # FAST bulk insert
-    Ticket.objects.bulk_create(ticket_objects)
-
-    tickets = Ticket.objects.order_by("-created_at")[:50]
-
-    for ticket in tickets:
-
-        # REDIS CACHE
-        redis_client.set(
-            f"ticket:{ticket.ticket_number}",
-            str(ticket.ticket_id),
-            ex=86400
+        number = ''.join(
+            str(secrets.randbelow(10))
+            for _ in range(5)
         )
 
-        # QR GENERATION
-        qr_url = request.build_absolute_uri(f"/scan/{ticket.ticket_id}/")
-        qr_img = qrcode.make(qr_url)
+        if number not in existing_numbers:
 
-        qr_img.save(os.path.join(qr_folder, f"{ticket.ticket_id}.png"))
+            existing_numbers.add(number)
 
-        # PDF GENERATION
-        html_string = render_to_string("ticket.html", {
-            "ticket": ticket,
-            "qr_image": f"{settings.MEDIA_URL}qr_codes/{ticket.ticket_id}.png"
-        })
+            ticket_objects.append(
+                Ticket(ticket_number=number)
+            )
 
-        pdf_path = os.path.join(output_folder, f"{ticket.ticket_number}.pdf")
+    Ticket.objects.bulk_create(
+        ticket_objects,
+        batch_size=50
+    )
 
-        HTML(
-            string=html_string,
-            base_url=request.build_absolute_uri("/")
-        ).write_pdf(pdf_path)
+    tickets = Ticket.objects.filter(
+        ticket_number__in=[
+            t.ticket_number for t in ticket_objects
+        ]
+    )
 
-        # KAFKA EVENT
-        send_ticket_created(ticket)
+    base_url = request.build_absolute_uri("/")
 
-    return HttpResponse("✅ 50 Tickets Generated Successfully")
+    # BACKGROUND TASKS
+    for ticket in tickets:
 
+        process_ticket.delay(
+            str(ticket.ticket_id),
+            base_url
+        )
 
+    return HttpResponse(
+        "✅ Tickets are generating in background"
+    )
 # =========================
 # 5. CAMERA SCAN
 # =========================
